@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: Products API
+  description: Product Service AWS 
+  
+servers:
+  - url: 
+
+paths: 
+  /products/{id}:
+    get:
+      summary: Gets product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Gets product by ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  genre:
+                    type: string
+                  price:
+                    type: string
+                  title:
+                    type: string
+                  releaseDate:
+                    type: string
+        '404':
+          description: Product not found
+  /products:
+    get:
+      summary: Gets all products
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  productsList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        genre:
+                          type: string
+                        price:
+                          type: string
+                        title:
+                          type: string
+                        releaseDate:
+                          type: string
