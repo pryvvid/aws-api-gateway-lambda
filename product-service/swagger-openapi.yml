@@ -38,6 +38,8 @@ paths:
                     type: integer
                   count:
                     type: integer
+                  img:
+                    type: string
         '404':
           description: Product not found
   /products:
@@ -65,3 +67,5 @@ paths:
                       type: integer
                     count:
                       type: integer
+                    img:
+                      type: string

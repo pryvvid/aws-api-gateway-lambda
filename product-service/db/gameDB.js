@@ -7,6 +7,7 @@ export const gameDB = [
     releaseDate: 2011,
     price: '29.99',
     count: 10,
+    img: 'https://i.imgur.com/qN1ZtEv.jpg',
   },
   {
     id: 2,
@@ -15,6 +16,7 @@ export const gameDB = [
     releaseDate: 2019,
     price: '29.99',
     count: 8,
+    img: 'https://i.imgur.com/TT2aBCG.jpg',
   },
   {
     id: 3,
@@ -23,6 +25,7 @@ export const gameDB = [
     releaseDate: 2012,
     price: '9.99',
     count: 12,
+    img: 'https://i.imgur.com/H2VoEzg.jpg',
   },
   {
     id: 4,
@@ -31,6 +34,7 @@ export const gameDB = [
     releaseDate: 2017,
     price: '9.99',
     count: 10,
+    img: 'https://i.imgur.com/szzxtRw.png',
   },
   {
     id: 5,
@@ -39,5 +43,6 @@ export const gameDB = [
     releaseDate: 2012,
     price: '9.99',
     count: 7,
+    img: 'https://i.imgur.com/BU3A92q.jpg',
   },
 ];
