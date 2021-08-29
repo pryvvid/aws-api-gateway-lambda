@@ -11,6 +11,8 @@ plugins:
   - serverless-jest-plugin
 
 custom:
+  webpack:
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
   jest:
     # You can pass jest options here
     # See details here: https://facebook.github.io/jest/docs/configuration.html

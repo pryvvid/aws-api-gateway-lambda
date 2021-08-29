@@ -2,15 +2,16 @@
   "name": "products-service-ecma",
   "version": "1.0.0",
   "description": "Serverless webpack example using ecma script",
-  "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/cli": "^7.14.8",
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
     "aws-sdk": "^2.977.0",
     "aws-sdk-mock": "^5.2.2",
+    "babel-jest": "^27.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
