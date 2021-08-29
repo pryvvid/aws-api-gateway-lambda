@@ -6,8 +6,10 @@ export const getProductsList = async () => {
     body: JSON.stringify({message: "Games not found"})
   }
 
+  const data = await gameDB;
+
   return {
     statusCode: 200,
-    body: JSON.stringify(gameDB),
+    body: JSON.stringify(data),
   };
 };

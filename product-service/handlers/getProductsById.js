@@ -7,7 +7,7 @@ export const getProductsById = async (event) => {
     body: JSON.stringify({message: "Bad request"}),
   }
   
-  const gameToFind = gameDB.find((game) => game.id === parseInt(id, 10));
+  const gameToFind = await gameDB.find((game) => game.id === parseInt(id, 10));
 
   if (gameToFind === undefined) return {
     statusCode: 404,
