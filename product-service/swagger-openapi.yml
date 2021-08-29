@@ -28,7 +28,7 @@ paths:
                 properties:
                   id:
                     type: integer
-                  genre:
+                  description:
                     type: string
                   price:
                     type: string
@@ -49,22 +49,19 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  productsList:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        description:
-                          type: string
-                        price:
-                          type: string
-                        title:
-                          type: string
-                        releaseDate:
-                          type: integer
-                        count:
-                          type: integer
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    description:
+                      type: string
+                    price:
+                      type: string
+                    title:
+                      type: string
+                    releaseDate:
+                      type: integer
+                    count:
+                      type: integer
