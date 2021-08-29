@@ -1,6 +1,9 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 
+// import path from 'path';
+// import slsw from 'serverless-webpack';
+
 module.exports = {
   entry: slsw.lib.entries,
   output: {

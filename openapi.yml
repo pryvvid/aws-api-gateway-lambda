@@ -5,7 +5,7 @@ info:
   description: Product Service AWS 
   
 servers:
-  - url: 
+  - url: https://fmfiacgetl.execute-api.eu-west-1.amazonaws.com
 
 paths: 
   /products/{id}:
@@ -35,7 +35,9 @@ paths:
                   title:
                     type: string
                   releaseDate:
-                    type: string
+                    type: integer
+                  count:
+                    type: integer
         '404':
           description: Product not found
   /products:
@@ -56,11 +58,13 @@ paths:
                       properties:
                         id:
                           type: integer
-                        genre:
+                        description:
                           type: string
                         price:
                           type: string
                         title:
                           type: string
                         releaseDate:
-                          type: string
+                          type: integer
+                        count:
+                          type: integer
