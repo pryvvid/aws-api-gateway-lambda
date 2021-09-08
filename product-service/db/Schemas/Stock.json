@@ -1,0 +1,16 @@
+{
+  "title": "Stock",
+  "description": "A stock of product",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "description": "Id of the product",
+      "type": "string"
+    },
+    "count": {
+      "description": "The count of the product",
+      "type": "integer"
+    }
+  },
+  "required": ["product_id"]
+}

@@ -1,13 +1,24 @@
 import { Client } from "pg";
-import { dbOptions } from '../db/dbOptions';
+import validator from "validator";
+import { dbOptions } from "../db/dbOptions";
 
 export const createProduct = async (event) => {
   console.log(event);
   console.log(event.body);
 
-  const { title, description, price, img, count } = event.body;
+  let { body } = event;
+  if (typeof body === "string") body = JSON.parse(body);
+  console.log(body);
 
-  if (!title || !description || !price || !img || !count)
+  const { title, description, price, img, count } = body;
+
+  if (
+    !title ||
+    !description ||
+    !validator.isInt(price) ||
+    !validator.isURL(img) ||
+    !validator.isInt(count)
+  )
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "Bad request" }),
@@ -60,8 +71,6 @@ export const createProduct = async (event) => {
       body: JSON.stringify({ message: "Internal server error" }),
     };
   } finally {
-    if (client) {
-      client.end();
-    }
+    if (client) client.end();
   }
 };
