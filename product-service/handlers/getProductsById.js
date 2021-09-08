@@ -25,7 +25,7 @@ export const getProductsById = async (event) => {
 
     console.log(product);
 
-    if (products.length === 0)
+    if (product.length === 0)
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "Game not found" }),

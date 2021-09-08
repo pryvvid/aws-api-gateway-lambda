@@ -9,18 +9,17 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 create table if not exists stocks (
-	id uuid primary key DEFAULT uuid_generate_v4(),
-    product_id uuid,
-    count integer,
-    foreign key ("product_id") references "products" ("id")
+	product_id uuid,
+	count integer,
+	foreign key ("product_id") references "products" ("id")
 )
 
 insert into products (title, description, price, img) values 
-('Dark Souls', 'Action/RPG', 29.99, 'https://i.imgur.com/qN1ZtEv.jpg'),
-('Disco Elysium', 'RPG', 19.99, 'https://i.imgur.com/TT2aBCG.jpg'),
-('The Binding of Isaac', 'Rogue-lite', 9.99, 'https://i.imgur.com/H2VoEzg.jpg'),
-('Hollow Knight', 'Metroidvania', 9.99, 'https://i.imgur.com/szzxtRw.png'),
-('Hotline Miami', 'Top-down action', 9.99, 'https://i.imgur.com/BU3A92q.jpg')
+('Dark Souls', 'Action/RPG', 30, 'https://i.imgur.com/qN1ZtEv.jpg'),
+('Disco Elysium', 'RPG', 20, 'https://i.imgur.com/TT2aBCG.jpg'),
+('The Binding of Isaac', 'Rogue-lite', 10, 'https://i.imgur.com/H2VoEzg.jpg'),
+('Hollow Knight', 'Metroidvania', 10, 'https://i.imgur.com/szzxtRw.png'),
+('Hotline Miami', 'Top-down action', 10, 'https://i.imgur.com/BU3A92q.jpg')
 
 select * from products;
 

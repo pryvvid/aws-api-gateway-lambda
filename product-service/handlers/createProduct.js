@@ -8,16 +8,15 @@ export const createProduct = async (event) => {
 
   let { body } = event;
   if (typeof body === "string") body = JSON.parse(body);
-  console.log(body);
 
   const { title, description, price, img, count } = body;
 
   if (
     !title ||
     !description ||
-    !validator.isInt(price) ||
+    !validator.isInt(''+price) ||
     !validator.isURL(img) ||
-    !validator.isInt(count)
+    !validator.isInt(''+count)
   )
     return {
       statusCode: 400,
