@@ -1,13 +1,12 @@
 
 export const gameDB = [
   {
-    id: 1,
-    title: 'Dark Souls',
-    description: 'Action/RPG',
-    releaseDate: 2011,
-    price: 29.99,
-    count: 10,
-    img: 'https://i.imgur.com/qN1ZtEv.jpg',
+    "id": 1,
+    "title": "Dark Souls",
+    "description": "Action/RPG",
+    "price": 30,
+    "count": 10,
+    "img": "https://i.imgur.com/qN1ZtEv.jpg",
   },
   {
     id: 2,
