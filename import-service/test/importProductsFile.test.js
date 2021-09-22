@@ -40,3 +40,24 @@ test("importProductsFile responds with 400 code", async () => {
   expect(body).toEqual(expectedBody);
   expect(statusCode).toEqual(expectedStatusCode);
 });
+
+test("importProductsFile should response with 500 code", async () => {
+  const eventParams = {
+    "queryStringParameters": {
+      "name": "gamedata"
+    }
+  }
+  
+  AWSMock.restore('S3');
+  
+  AWSMock.mock('S3', 'getSignedUrl', () => {
+    throw new Error('Oops')
+  });
+
+  const expectedStatusCode = 500;
+
+  const { body, statusCode } = await importProductsFile(eventParams);
+
+  expect(body).toEqual(JSON.stringify({message: "Internal server error"}));
+  expect(statusCode).toEqual(expectedStatusCode);
+});
