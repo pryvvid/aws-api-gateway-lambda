@@ -39,16 +39,16 @@ export const importFileParser = async (event) => {
         Bucket: BUCKET,
         CopySource: `${BUCKET}/${record.s3.object.key}`,
         Key: record.s3.object.key.replace('uploaded', 'parsed')
-      }).promise().then(() => {
-        console.log(`Copied into ${BUCKET}/${record.s3.object.key.replace('uploaded', 'parsed')}`);
-      });
+      }).promise();
+
+      console.log(`Copied into ${BUCKET}/${record.s3.object.key.replace('uploaded', 'parsed')}`);
 
       await s3.deleteObject({
         Bucket: BUCKET,
         Key: record.s3.object.key
-      }).promise().then(() => {
-        console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
-      });
+      }).promise();
+      
+      console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
 
     } catch (error) {
       console.error(error);
