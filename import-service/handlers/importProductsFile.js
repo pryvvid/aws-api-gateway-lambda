@@ -7,7 +7,7 @@ export const importProductsFile = async (event) => {
   if (!queryStringParameters) return handleErrorResponse(400);
 
   const { name } = queryStringParameters;
-  if (!queryStringParameters) return handleErrorResponse(400);
+  if (!name) return handleErrorResponse(400);
 
   console.log(name);
 
@@ -24,7 +24,7 @@ export const importProductsFile = async (event) => {
   const s3 = new S3({region: 'eu-west-1'});
 
   try {
-    url = await s3.getSignedUrl('putObject', params);
+    url = await s3.getSignedUrlPromise('putObject', params);
     console.log(url);
   } catch (e) {
     console.log(e);
