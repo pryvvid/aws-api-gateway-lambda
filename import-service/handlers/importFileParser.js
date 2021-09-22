@@ -17,42 +17,43 @@ export const importFileParser = async (event) => {
       Key: record.s3.object.key
     }).createReadStream();
 
-    await finished(
-      s3ReadStream
-        .pipe(csv())
-        .on('data', (chunk) => {
-          console.log(chunk);
-          results.push(chunk);
-        })
-        .on('end', async () => {
-          console.log('End of readstream');
-          console.log(results);
-
-          console.log('s3', s3);
-          console.log('bucket', BUCKET);
-          console.log('record', record);
-
-          try {
-            await s3.copyObject({
-              Bucket: BUCKET,
-              CopySource: `${BUCKET}/${record.s3.object.key}`,
-              Key: record.s3.object.key.replace('uploaded', 'parsed')
-            }).promise();
-        
-            await s3.deleteObject({
-              Bucket: BUCKET,
-              Key: record.s3.object.key
-            }).promise();
-          } catch (error) {
+    try {
+      await finished(
+        s3ReadStream
+          .pipe(csv())
+          .on('data', (chunk) => {
+            console.log(chunk);
+            results.push(chunk);
+          })
+          .on('end', () => {
+            console.log('End of readstream');
+            console.log(results);
+          })
+          .on('error', (error) => {
             console.error(error);
             return handleErrorResponse(500);
-          }
-        })
-        .on('error', (error) => {
-          console.error(error);
-          return handleErrorResponse(500);
-        })
-    );
+          })
+      );
+
+      await s3.copyObject({
+        Bucket: BUCKET,
+        CopySource: `${BUCKET}/${record.s3.object.key}`,
+        Key: record.s3.object.key.replace('uploaded', 'parsed')
+      }).promise().then(() => {
+        console.log(`Copied into ${BUCKET}/${record.s3.object.key.replace('uploaded', 'parsed')}`);
+      });
+
+      await s3.deleteObject({
+        Bucket: BUCKET,
+        Key: record.s3.object.key
+      }).promise().then(() => {
+        console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
+      });
+
+    } catch (error) {
+      console.error(error);
+      return handleErrorResponse(500);
+    }
   }
 
   return {
