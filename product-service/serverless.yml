@@ -13,6 +13,8 @@ plugins:
 custom:
   webpack:
     webpackConfig: "webpack.config.js" # Name of webpack configuration file
+  catalogItemsQueue:
+    Ref: catalogItemsQueue
 
 provider:
   name: aws
@@ -28,6 +30,31 @@ provider:
     PG_DB_NAME: ${env:PG_DB_NAME}
     PG_USER: ${env:PG_USER}
     PG_PASSWORD: ${env:PG_PASSWORD}
+    SQS_URL:
+      Ref: catalogItemsQueue
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: "sqs:*"
+      Resource:
+        - Fn::GetAtt: [catalogItemsQueue, Arn]
+
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: rs-aws-sqs-queue
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: rs-aws-sqs-create-product-topic
+    createProductSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: pryvvid@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
 
 functions:
   getProductsList:
@@ -50,3 +77,14 @@ functions:
       - httpApi:
           method: post
           path: /products
+
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          maximumRetryAttempts: 10
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn

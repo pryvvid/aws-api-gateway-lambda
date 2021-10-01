@@ -22,15 +22,25 @@ provider:
   httpApi:
     cors: true
 
+  environment:
+    SQS_URL:
+      Ref: ${cf:product-service.catalogItemsQueue}
+
   iamRoleStatements:
     - Effect: "Allow"
       Action: "s3:ListBucket"
-      Resource: 
+      Resource:
         - "arn:aws:s3:::rs-store-aws"
     - Effect: "Allow"
       Action: "s3:*"
-      Resource: 
+      Resource:
         - "arn:aws:s3:::rs-store-aws/*"
+    - Effect: "Allow"
+      Action: "sqs:*"
+      Resource:
+        Fn::GetAtt:
+          - ${cf:product-service.catalogItemsQueue}
+          - Arn
 
 functions:
   importProductsFile:
@@ -39,7 +49,7 @@ functions:
       - httpApi:
           path: /import
           method: get
-          request: 
+          request:
             parameters:
               querystrings:
                 name: true
@@ -52,4 +62,3 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-          
