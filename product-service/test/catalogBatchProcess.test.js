@@ -1,6 +1,6 @@
 import AWSMock from 'aws-sdk-mock';
 import { catalogBatchProcess } from '../handlers/catalogBatchProcess';
-import { addProductToDb } from '../utils/addProductToDb'
+import * as addProductToDbFn  from '../utils/addProductToDb'
 
 afterEach(() => {
   AWSMock.restore('SNS');
@@ -20,7 +20,7 @@ test("catalogBatchProcess should send message", async () => {
     ]
   }
 
-  const spy = jest.spyOn(catalogBatchProcess, 'addProductToDb');
+  const spy = jest.spyOn(addProductToDbFn, 'addProductToDb');
   spy.mockReturnValue(eventData.Records[0]);
 
   // AWSMock.mock('S3', 'getSignedUrl', (_action, _params, callback) => {
