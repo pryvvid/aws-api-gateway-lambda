@@ -23,8 +23,7 @@ provider:
     cors: true
 
   environment:
-    SQS_URL:
-      Ref: ${cf:product-service.catalogItemsQueue}
+    SQS_URL: ${cf:product-service-dev.SqsUrl}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -38,9 +37,7 @@ provider:
     - Effect: "Allow"
       Action: "sqs:*"
       Resource:
-        Fn::GetAtt:
-          - ${cf:product-service.catalogItemsQueue}
-          - Arn
+        - ${cf:product-service-dev.SqsArn}
 
 functions:
   importProductsFile:

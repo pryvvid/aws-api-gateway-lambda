@@ -13,8 +13,6 @@ plugins:
 custom:
   webpack:
     webpackConfig: "webpack.config.js" # Name of webpack configuration file
-  catalogItemsQueue:
-    Ref: catalogItemsQueue
 
 provider:
   name: aws
@@ -30,13 +28,17 @@ provider:
     PG_DB_NAME: ${env:PG_DB_NAME}
     PG_USER: ${env:PG_USER}
     PG_PASSWORD: ${env:PG_PASSWORD}
-    SQS_URL:
-      Ref: catalogItemsQueue
+    SNS_TOPIC_ARN:
+      Ref: createProductTopic
   iamRoleStatements:
     - Effect: "Allow"
       Action: "sqs:*"
       Resource:
         - Fn::GetAtt: [catalogItemsQueue, Arn]
+    - Effect: "Allow"
+      Action: "sns:*"
+      Resource:
+        Ref: createProductTopic
 
 resources:
   Resources:
@@ -51,10 +53,32 @@ resources:
     createProductSubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        Endpoint: pryvvid@gmail.com
+        Endpoint: ${env:EMAIL}
         Protocol: email
         TopicArn:
           Ref: createProductTopic
+    createProductLowPriceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: ${env:EMAIL_LOW_PRICE}
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        FilterPolicy: 
+            price:
+              - numeric:
+                - '<='
+                - 10
+  Outputs:
+    SqsUrl:
+      Value: !Ref catalogItemsQueue
+      Export:
+        Name: '${self:service}:${self:provider.stage}:SqsUrl'
+    SqsArn:
+      Value:
+        Fn::GetAtt: [catalogItemsQueue, Arn]
+      Export:
+        Name: '${self:service}:${self:provider.stage}:SqsArn'
 
 functions:
   getProductsList:
@@ -83,8 +107,5 @@ functions:
     events:
       - sqs:
           batchSize: 5
-          maximumRetryAttempts: 10
           arn:
-            Fn::GetAtt:
-              - catalogItemsQueue
-              - Arn
+            Fn::GetAtt: [catalogItemsQueue, Arn]

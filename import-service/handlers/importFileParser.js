@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk";
+import AWS from "aws-sdk";
 import csv from "csv-parser";
 import stream from "stream";
 import util from "util";
@@ -8,8 +8,9 @@ import { handleErrorResponse } from "../utils/handleErrorResponse";
 const finished = util.promisify(stream.finished);
 
 export const importFileParser = async (event) => {
-  const s3 = new S3({ region: "eu-west-1" });
-  const sqs = new AWS.SQS();
+  const s3 = new AWS.S3({ region: "eu-west-1" });
+  const sqs = new AWS.SQS({region: "eu-west-1"});
+  const { SQS_URL } = process.env; 
   const results = [];
 
   for (const record of event.Records) {
@@ -31,17 +32,6 @@ export const importFileParser = async (event) => {
           .on("end", () => {
             console.log("End of readstream");
             console.log(results);
-            results.forEach((chunk) => {
-              sqs.sendMessage(
-                {
-                  QueueUrl: process.env.SQS_URL,
-                  MessageBody: chunk,
-                },
-                () => {
-                  console.log("Added to queue", chunk);
-                }
-              );
-            });
           })
           .on("error", (error) => {
             console.error(error);
@@ -72,11 +62,43 @@ export const importFileParser = async (event) => {
         .promise();
 
       console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
+
+      // results.forEach((item) => {
+      //   const message = JSON.stringify(item);
+      //   // console.log(typeof message);
+      //   sqs.sendMessage(
+      //     {
+      //       QueueUrl: SQS_URL,
+      //       MessageBody: message,
+      //     },
+      //     (error, data) => {
+      //       if (error) {
+      //         console.log(`Error for send to SQS: ${error}`);
+      //       } else {
+      //         console.log(`Message was sent to SQS: ${data}`);
+      //       }
+      //     }
+      //   );
+      // });
     } catch (error) {
       console.error(error);
       return handleErrorResponse(500);
     }
   }
+
+  for (const result of results) {
+    const message = JSON.stringify(result);
+    try {
+      await sqs.sendMessage(
+        {
+          QueueUrl: SQS_URL,
+          MessageBody: message,
+        },
+      ).promise();
+    } catch (error) {
+      console.log(error);
+    }
+  }  
 
   return {
     statusCode: 202,
