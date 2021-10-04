@@ -63,23 +63,6 @@ export const importFileParser = async (event) => {
 
       console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
 
-      // results.forEach((item) => {
-      //   const message = JSON.stringify(item);
-      //   // console.log(typeof message);
-      //   sqs.sendMessage(
-      //     {
-      //       QueueUrl: SQS_URL,
-      //       MessageBody: message,
-      //     },
-      //     (error, data) => {
-      //       if (error) {
-      //         console.log(`Error for send to SQS: ${error}`);
-      //       } else {
-      //         console.log(`Message was sent to SQS: ${data}`);
-      //       }
-      //     }
-      //   );
-      // });
     } catch (error) {
       console.error(error);
       return handleErrorResponse(500);
@@ -97,6 +80,7 @@ export const importFileParser = async (event) => {
       ).promise();
     } catch (error) {
       console.log(error);
+      return handleErrorResponse(500);
     }
   }  
 
