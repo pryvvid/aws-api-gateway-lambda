@@ -12,7 +12,7 @@ export const catalogBatchProcess = async (event) => {
 
       await sns
         .publish({
-          Subject: "New product was added to catalog",
+          Subject: `${addedProduct.title} was added to catalog`,
           Message: JSON.stringify(addedProduct),
           TopicArn: SNS_TOPIC_ARN,
           MessageAttributes: {
@@ -26,7 +26,7 @@ export const catalogBatchProcess = async (event) => {
 
       console.log(addedProduct);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return {
         statusCode: 500,
         body: JSON.stringify({ message: "Internal server error" }),
