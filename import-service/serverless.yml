@@ -46,6 +46,12 @@ functions:
       - httpApi:
           path: /import
           method: get
+          authorizer:
+            name: basicAuthorizer
+            arn: ${cf:authorization-service-dev.BasicAuthorizerArn}
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
           request:
             parameters:
               querystrings:
