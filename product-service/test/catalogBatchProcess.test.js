@@ -6,11 +6,13 @@ import { addProductToDb } from "../utils/addProductToDb";
 const eventData = {
   Records: [
     {
-      title: "new game",
-      description: "new game description",
-      price: 5,
-      count: 10,
-      img: "http://example.com/",
+      body: {
+        title: "new game",
+        description: "new game description",
+        price: 5,
+        count: 10,
+        img: "http://example.com/",
+      },
     },
   ],
 };
@@ -19,20 +21,20 @@ afterEach(() => {
   AWSMock.restore("SNS");
 });
 
-test('addProductToDb should have been called', async () => {
+test("addProductToDb should have been called", async () => {
   const spyAddProduct = jest.spyOn(addProductToDbFn, "addProductToDb");
-  spyAddProduct.mockReturnValue(eventData.Records[0]);
+  spyAddProduct.mockReturnValue(eventData.Records[0].body);
 
   AWSMock.mock("SNS", "publish", "test-message");
 
   await catalogBatchProcess(eventData);
 
-  expect(addProductToDb).toHaveBeenCalled()
-})
+  expect(addProductToDb).toHaveBeenCalled();
+});
 
 test("catalogBatchProcess should respond with 202 code", async () => {
   const spyAddProduct = jest.spyOn(addProductToDbFn, "addProductToDb");
-  spyAddProduct.mockReturnValue(eventData.Records[0]);
+  spyAddProduct.mockReturnValue(eventData.Records[0].body);
 
   AWSMock.mock("SNS", "publish", "test-message");
 
@@ -45,7 +47,7 @@ test("catalogBatchProcess should respond with 202 code", async () => {
 
 test("catalogBatchProcess should respond with 500 code", async () => {
   const spyAddProduct = jest.spyOn(addProductToDbFn, "addProductToDb");
-  spyAddProduct.mockReturnValue(eventData.Records[0]);
+  spyAddProduct.mockReturnValue(eventData.Records[0].body);
 
   AWSMock.mock("SNS", "publish", () => {
     throw new Error("Oops");
