@@ -39,11 +39,32 @@ provider:
       Resource:
         - ${cf:product-service-dev.SqsArn}
 
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    GatewayResponseDefault5XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+
 functions:
   importProductsFile:
     handler: handler.importProductsFile
     events:
-      - httpApi:
+      - http:
           path: /import
           method: get
           authorizer:
@@ -52,6 +73,7 @@ functions:
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             type: token
+          cors: true
           request:
             parameters:
               querystrings:

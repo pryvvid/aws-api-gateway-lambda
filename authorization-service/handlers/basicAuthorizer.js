@@ -2,7 +2,7 @@ import { generatePolicy } from "../utils/generatePolicy";
 import { handleErrorResponse } from "../utils/handleErrorResponse";
 
 export const basicAuthorizer = async (event) => {
-  console("Event", JSON.stringify(event));
+  console.log("Event", JSON.stringify(event));
 
   if (event.type !== "TOKEN") {
     return handleErrorResponse(401);

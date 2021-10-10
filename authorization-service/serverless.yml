@@ -28,7 +28,7 @@ resources:
   Outputs:
     BasicAuthorizerArn:
       Value:
-        Fn::GetAtt: [basicAuthorizer, Arn]
+        Fn::GetAtt: [BasicAuthorizerLambdaFunction, Arn]
       Export:
         Name: "${self:service}:${self:provider.stage}:BasicAuthorizerArn"
 
