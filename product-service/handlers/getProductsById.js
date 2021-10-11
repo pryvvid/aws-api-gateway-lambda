@@ -1,21 +1,47 @@
-import { gameDB } from '../db/gameDB';
+import { Client } from "pg";
+import validator from "validator";
+import { dbOptions } from "../db/dbOptions";
 
 export const getProductsById = async (event) => {
+  console.log(event);
   const { id } = event.pathParameters;
-  if (!id) return {
-    statusCode: 400,
-    body: JSON.stringify({message: "Bad request"}),
-  }
-  
-  const gameToFind = await gameDB.find((game) => game.id === parseInt(id, 10));
+  console.log(id);
 
-  if (gameToFind === undefined) return {
-    statusCode: 404,
-    body: JSON.stringify({message: "Game not found"}),
-  }
+  if (!validator.isUUID(id))
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Bad request" }),
+    };
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(gameToFind),
-  };
+  let client;
+
+  try {
+    client = new Client(dbOptions);
+    await client.connect();
+    const { rows: product } = await client.query(
+      "select p.*, s.count from products p left join stocks s on p.id = s.product_id where p.id=$1",
+      [id]
+    );
+
+    console.log(product);
+
+    if (product.length === 0)
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "Game not found" }),
+      };
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(product),
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Internal server error" }),
+    };
+  } finally {
+    if (client) client.end();
+  }
 };
