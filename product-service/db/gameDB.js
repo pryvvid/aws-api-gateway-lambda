@@ -1,0 +1,48 @@
+
+export const gameDB = [
+  {
+    id: 1,
+    title: 'Dark Souls',
+    description: 'Action/RPG',
+    releaseDate: 2011,
+    price: 29.99,
+    count: 10,
+    img: 'https://i.imgur.com/qN1ZtEv.jpg',
+  },
+  {
+    id: 2,
+    title: 'Disco Elysium',
+    description: 'RPG',
+    releaseDate: 2019,
+    price: 29.99,
+    count: 8,
+    img: 'https://i.imgur.com/TT2aBCG.jpg',
+  },
+  {
+    id: 3,
+    title: 'The Binding of Isaac',
+    description: 'Rogue-lite',
+    releaseDate: 2012,
+    price: 9.99,
+    count: 12,
+    img: 'https://i.imgur.com/H2VoEzg.jpg',
+  },
+  {
+    id: 4,
+    title: 'Hollow Knight',
+    description: 'Metroidvania',
+    releaseDate: 2017,
+    price: 9.99,
+    count: 10,
+    img: 'https://i.imgur.com/szzxtRw.png',
+  },
+  {
+    id: 5,
+    title: 'Hotline Miami',
+    description: 'Top-down action',
+    releaseDate: 2012,
+    price: 9.99,
+    count: 7,
+    img: 'https://i.imgur.com/BU3A92q.jpg',
+  },
+];

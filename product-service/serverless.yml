@@ -1,0 +1,44 @@
+service:
+  name: product-service
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+frameworkVersion: '2'
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+  - serverless-jest-plugin
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+  jest:
+    # You can pass jest options here
+    # See details here: https://facebook.github.io/jest/docs/configuration.html
+    # For instance, uncomment next line to enable code coverage
+    collectCoverage: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-1
+  stage: dev
+  httpApi:
+    cors: true
+
+functions:
+  getProductsList:
+    handler: handler.getProductsList
+    events:
+     - httpApi:
+         path: /products
+         method: get
+
+  getProductsById:
+    handler: handler.getProductsById
+    events:
+      - httpApi:
+          method: get
+          path: /products/{id}
