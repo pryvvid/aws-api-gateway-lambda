@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { generatePolicy } from "../utils/generatePolicy";
 import { handleErrorResponse } from "../utils/handleErrorResponse";
 
