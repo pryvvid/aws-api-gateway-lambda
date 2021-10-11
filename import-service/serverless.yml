@@ -22,15 +22,22 @@ provider:
   httpApi:
     cors: true
 
+  environment:
+    SQS_URL: ${cf:product-service-dev.SqsUrl}
+
   iamRoleStatements:
     - Effect: "Allow"
       Action: "s3:ListBucket"
-      Resource: 
+      Resource:
         - "arn:aws:s3:::rs-store-aws"
     - Effect: "Allow"
       Action: "s3:*"
-      Resource: 
+      Resource:
         - "arn:aws:s3:::rs-store-aws/*"
+    - Effect: "Allow"
+      Action: "sqs:*"
+      Resource:
+        - ${cf:product-service-dev.SqsArn}
 
 functions:
   importProductsFile:
@@ -39,7 +46,7 @@ functions:
       - httpApi:
           path: /import
           method: get
-          request: 
+          request:
             parameters:
               querystrings:
                 name: true
@@ -52,4 +59,3 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-          

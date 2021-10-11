@@ -1,53 +1,66 @@
-import { S3 } from 'aws-sdk';
-import csv from 'csv-parser';
-import stream from 'stream';
-import util from 'util';
-import { BUCKET } from '../constants';
-import { handleErrorResponse } from '../utils/handleErrorResponse';
+import AWS from "aws-sdk";
+import csv from "csv-parser";
+import stream from "stream";
+import util from "util";
+import { BUCKET } from "../constants";
+import { handleErrorResponse } from "../utils/handleErrorResponse";
 
 const finished = util.promisify(stream.finished);
 
 export const importFileParser = async (event) => {
-  const s3 = new S3({region: 'eu-west-1'});
+  const s3 = new AWS.S3({ region: "eu-west-1" });
+  const sqs = new AWS.SQS({region: "eu-west-1"});
+  const { SQS_URL } = process.env; 
   const results = [];
-  
+
   for (const record of event.Records) {
-    const s3ReadStream = s3.getObject({
-      Bucket: BUCKET,
-      Key: record.s3.object.key
-    }).createReadStream();
+    const s3ReadStream = s3
+      .getObject({
+        Bucket: BUCKET,
+        Key: record.s3.object.key,
+      })
+      .createReadStream();
 
     try {
       await finished(
         s3ReadStream
           .pipe(csv())
-          .on('data', (chunk) => {
+          .on("data", (chunk) => {
             console.log(chunk);
             results.push(chunk);
           })
-          .on('end', () => {
-            console.log('End of readstream');
+          .on("end", () => {
+            console.log("End of readstream");
             console.log(results);
           })
-          .on('error', (error) => {
+          .on("error", (error) => {
             console.error(error);
             return handleErrorResponse(500);
           })
       );
 
-      await s3.copyObject({
-        Bucket: BUCKET,
-        CopySource: `${BUCKET}/${record.s3.object.key}`,
-        Key: record.s3.object.key.replace('uploaded', 'parsed')
-      }).promise();
+      await s3
+        .copyObject({
+          Bucket: BUCKET,
+          CopySource: `${BUCKET}/${record.s3.object.key}`,
+          Key: record.s3.object.key.replace("uploaded", "parsed"),
+        })
+        .promise();
 
-      console.log(`Copied into ${BUCKET}/${record.s3.object.key.replace('uploaded', 'parsed')}`);
+      console.log(
+        `Copied into ${BUCKET}/${record.s3.object.key.replace(
+          "uploaded",
+          "parsed"
+        )}`
+      );
 
-      await s3.deleteObject({
-        Bucket: BUCKET,
-        Key: record.s3.object.key
-      }).promise();
-      
+      await s3
+        .deleteObject({
+          Bucket: BUCKET,
+          Key: record.s3.object.key,
+        })
+        .promise();
+
       console.log(`Deleted from ${BUCKET}/${record.s3.object.key}`);
 
     } catch (error) {
@@ -56,7 +69,22 @@ export const importFileParser = async (event) => {
     }
   }
 
+  for (const result of results) {
+    const message = JSON.stringify(result);
+    try {
+      await sqs.sendMessage(
+        {
+          QueueUrl: SQS_URL,
+          MessageBody: message,
+        },
+      ).promise();
+    } catch (error) {
+      console.log(error);
+      return handleErrorResponse(500);
+    }
+  }  
+
   return {
-    statusCode: 202
-  }
-}
+    statusCode: 202,
+  };
+};
