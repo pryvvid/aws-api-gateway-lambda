@@ -42,6 +42,24 @@ provider:
 
 resources:
   Resources:
+    GatewayResponseDefault4XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+    GatewayResponseDefault5XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
     catalogItemsQueue:
       Type: AWS::SQS::Queue
       Properties:
@@ -64,21 +82,21 @@ resources:
         Protocol: email
         TopicArn:
           Ref: createProductTopic
-        FilterPolicy: 
-            price:
-              - numeric:
-                - '<='
+        FilterPolicy:
+          price:
+            - numeric:
+                - "<="
                 - 10
   Outputs:
     SqsUrl:
       Value: !Ref catalogItemsQueue
       Export:
-        Name: '${self:service}:${self:provider.stage}:SqsUrl'
+        Name: "${self:service}:${self:provider.stage}:SqsUrl"
     SqsArn:
       Value:
         Fn::GetAtt: [catalogItemsQueue, Arn]
       Export:
-        Name: '${self:service}:${self:provider.stage}:SqsArn'
+        Name: "${self:service}:${self:provider.stage}:SqsArn"
 
 functions:
   getProductsList:
@@ -87,6 +105,17 @@ functions:
       - httpApi:
           path: /products
           method: get
+
+  getProductsListCognito:
+    handler: handler.getProductsList
+    events:
+      - http:
+          path: /products/auth
+          method: get
+          cors: true
+          authorizer:
+            name: cognitoAuth
+            arn: arn:aws:cognito-idp:eu-west-1:027628044945:userpool/eu-west-1_maaygeO0B
 
   getProductsById:
     handler: handler.getProductsById
