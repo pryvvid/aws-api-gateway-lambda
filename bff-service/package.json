@@ -5,7 +5,8 @@
   "scripts": {
     "start": "nodemon index.js",
     "start:dev": "node index.js",
-    "eb-init": "eb init --platform node.js --region eu-west-1"
+    "eb-init": "eb init pryvvid-bff-api --platform node.js --region eu-west-1",
+    "eb-create": "eb create bff-dev --single --cname pryvvid-bff-api-dev"
   },
   "dependencies": {
     "axios": "^0.24.0",
