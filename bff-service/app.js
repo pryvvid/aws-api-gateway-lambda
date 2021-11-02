@@ -2,9 +2,10 @@ const express = require("express");
 const axios = require("axios").default;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.all("/*", async (req, res) => {
   console.log("originalUrl", req.originalUrl);
