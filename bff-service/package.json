@@ -6,7 +6,8 @@
     "start": "node index.js",
     "start:dev": "nodemon index.js",
     "eb-init": "eb init pryvvid-bff-api --platform node.js --region eu-west-1",
-    "eb-create": "eb create bff-dev --single --cname pryvvid-bff-api-dev"
+    "eb-create": "eb create bff-dev --single --cname pryvvid-bff-api-dev",
+    "eb-deploy": "eb deploy"
   },
   "dependencies": {
     "axios": "^0.24.0",
