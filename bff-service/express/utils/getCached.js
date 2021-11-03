@@ -11,14 +11,14 @@ const getCached = () => {
     const diff = ((now - timer) / (1000 * 60)).toFixed(0);
     console.log("Timer", timer);
     console.log("Now", now);
-    console.log("Diff", diff);
+    console.log("Minutes passed:", diff);
     if (diff < 2) {
-      console.log("Data from cache");
+      console.log("Get data from cache");
       return true;
     } else {
-      console.log("Data from request");
-      timer = null;
-      return false;
+      console.log("Get data from request");
+      timer = Date.now();
+      console.log("Start new timer", timer);
     }
   }
 };
