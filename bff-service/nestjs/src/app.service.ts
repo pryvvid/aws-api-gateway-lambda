@@ -1,6 +1,6 @@
 import { Injectable, Req, Res } from '@nestjs/common';
 import axios, { Method } from 'axios';
-import { getCached } from './utils/getCached';
+import { shouldReturnCachedData } from './utils/shouldReturnCachedData';
 import { Request, Response } from 'express';
 
 let cachedProducts = null;
@@ -12,8 +12,9 @@ export class AppService {
     @Res() res: Response,
     recipientUrl: string,
   ): Promise<Response> {
+    // check if products list should be returned from cache
     if (req.originalUrl.substring(1) === 'products' && req.method === 'GET') {
-      if (getCached()) return res.status(200).json(cachedProducts);
+      if (shouldReturnCachedData()) return res.status(200).json(cachedProducts);
     }
 
     const axiosConfig = {
@@ -26,13 +27,12 @@ export class AppService {
 
     try {
       const response = await axios(axiosConfig);
-      // console.log("Response", response);
+      // make cache for products list
       if (req.originalUrl.substring(1) === 'products' && req.method === 'GET') {
         cachedProducts = response.data;
       }
       return res.status(response.status).json(response.data);
     } catch (error) {
-      // console.log("Error:", error);
       console.log(JSON.stringify(error));
 
       if (error.response) {

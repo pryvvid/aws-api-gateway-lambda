@@ -1,6 +1,6 @@
 let timer = null;
 
-export const getCached = () => {
+export const shouldReturnCachedData = (): boolean => {
   if (!timer) {
     timer = Date.now();
     console.log('Start timer', timer);

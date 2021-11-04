@@ -1,6 +1,6 @@
 let timer = null;
 
-const getCached = () => {
+const shouldReturnCachedData = () => {
   if (!timer) {
     timer = Date.now();
     console.log("Start timer", timer);
@@ -8,19 +8,20 @@ const getCached = () => {
   }
   if (timer) {
     const now = Date.now();
-    const diff = ((now - timer) / (1000 * 60)).toFixed(0);
+    const diff = ((now - timer) / (1000 * 60)).toFixed(1);
     console.log("Timer", timer);
     console.log("Now", now);
     console.log("Minutes passed:", diff);
-    if (diff < 2) {
+    if (parseInt(diff) < 2) {
       console.log("Get data from cache");
       return true;
     } else {
       console.log("Get data from request");
       timer = Date.now();
       console.log("Start new timer", timer);
+      return false;
     }
   }
 };
 
-module.exports = getCached;
+module.exports = shouldReturnCachedData;
