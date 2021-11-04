@@ -6,5 +6,5 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log("App is listening to port", PORT);
+  console.log(`Express app is running http://localhost:${PORT}`);
 });

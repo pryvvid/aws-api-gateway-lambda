@@ -1,10 +1,16 @@
-import { All, Controller, Req, Res } from '@nestjs/common';
+import { All, Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
+
+  @Get('/favicon.ico')
+  @HttpCode(204)
+  getFavicon(): void {
+    return;
+  }
 
   @All()
   bff(@Req() req: Request, @Res() res: Response): Response | Promise<Response> {
