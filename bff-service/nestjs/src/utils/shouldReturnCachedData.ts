@@ -5,8 +5,7 @@ export const shouldReturnCachedData = (): boolean => {
     timer = Date.now();
     console.log('Start timer', timer);
     return false;
-  }
-  if (timer) {
+  } else {
     const now = Date.now();
     const diff = ((now - timer) / (1000 * 60)).toFixed(1);
     console.log('Timer', timer);

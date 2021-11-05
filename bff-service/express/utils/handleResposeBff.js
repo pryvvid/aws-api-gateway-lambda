@@ -2,11 +2,13 @@ const axios = require("axios").default;
 const shouldReturnCachedData = require("./shouldReturnCachedData");
 
 let cachedProducts = null;
+let cachedStatus = null;
 
 const handleResposeBff = async (req, res, recipientUrl) => {
   // check if products list should be returned from cache
   if (req.originalUrl.substring(1) === "products" && req.method === "GET") {
-    if (shouldReturnCachedData()) return res.status(200).json(cachedProducts);
+    if (shouldReturnCachedData())
+      return res.status(cachedStatus).json(cachedProducts);
   }
 
   const axiosConfig = {
@@ -23,19 +25,17 @@ const handleResposeBff = async (req, res, recipientUrl) => {
     // make cache for products list
     if (req.originalUrl.substring(1) === "products" && req.method === "GET") {
       cachedProducts = response.data;
+      cachedStatus = response.status;
     }
     return res.status(response.status).json(response.data);
   } catch (error) {
     console.log(JSON.stringify(error));
 
     if (error.response) {
-      const { message } = error;
       const { status, statusText } = error.response;
       console.log("Status:", status);
-      console.log("Message:", message);
-      return res
-        .status(status)
-        .json({ message: statusText, errorMessage: message });
+      console.log("Message:", statusText);
+      return res.status(status).json({ message: statusText });
     } else {
       return res.status(500).json({ error: error.message });
     }
