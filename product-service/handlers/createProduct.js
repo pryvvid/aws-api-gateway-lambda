@@ -14,9 +14,8 @@ export const createProduct = async (event) => {
   if (
     !title ||
     !description ||
-    !validator.isInt(''+price) ||
-    !validator.isURL(img) ||
-    !validator.isInt(''+count)
+    !validator.isInt("" + price) ||
+    !validator.isInt("" + count)
   )
     return {
       statusCode: 400,
